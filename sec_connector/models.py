@@ -2,6 +2,10 @@ from pydantic import BaseModel, Field, field_validator
 from datetime import date
 from __future__ import annotations
 
+def validate_non_empty(v: str, field_name: str) -> str:
+    if (not isinstance(v, str) or not v.strip()): #check string empty
+        raise ValueError(field_name + " must be a non-empty string!")
+    return v.strip()
 
 class Company(BaseModel):
     """
@@ -16,30 +20,22 @@ class Company(BaseModel):
     @classmethod
     #Validates ticker definition 
     def validate_ticker(cls, v: str) -> str:
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("Ticker must be non-empty!")
-        return v.strip()
+        return validate_non_empty(v, "Ticker").upper()
     
     @field_validator("cik")
     @classmethod
     def validate_cik(cls, v: str) -> str:
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("cik must be non-empty!")
-        v = v.strip()
-
-        #Make sure cik only has digits and up to 10
-        if (not v.isdigit()):
-            raise ValueError("cik must contain only digits!")
-        if (len(v) > 10):
-            raise ValueError("cik must be at most 10 digits!")
+        v = validate_non_empty(v, "CIK")
+        if not v.isdigit():
+            raise ValueError("CIK must contain only digits!")
+        if len(v) > 10:
+            raise ValueError("CIK must be at most 10 digits!")
         return v
     
     @field_validator("name")
     @classmethod
     def validate_name(cls, v: str):
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("Name must be non-empty!")
-        return v.strip()
+        return validate_non_empty(v, "Name").upper()
     
 
 class Filing(BaseModel):
@@ -56,37 +52,27 @@ class Filing(BaseModel):
     @field_validator("cik")
     @classmethod
     def validate_cik(cls, v: str) -> str:
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("cik must be non-empty!")
-        v = v.strip()
-
-        #Make sure cik only has digits and up to 10
-        if (not v.isdigit()):
-            raise ValueError("cik must contain only digits!")
-        if (len(v) > 10):
-            raise ValueError("cik must be at most 10 digits!")
+        v = validate_non_empty(v, "CIK")
+        if not v.isdigit():
+            raise ValueError("CIK must contain only digits!")
+        if len(v) > 10:
+            raise ValueError("CIK must be at most 10 digits!")
         return v
 
     @field_validator("company_name")
     @classmethod
     def validate_name(cls, v: str):
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("Name must be non-empty!")
-        return v.strip()
+        return validate_non_empty(v, "Company name").upper()
 
     @field_validator("form_type")
     @classmethod
     def validate_form_type(cls, v: str):
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("Form type must be non-empty!")
-        return v.strip()
+        return validate_non_empty(v, "Form type").upper()
     
     @field_validator("accession_number")
     @classmethod
     def validate_form_type(cls, v: str):
-        if (not isinstance(v, str) or not v.strip()): #check string empty
-            raise ValueError("Accession number must be non-empty!")
-        return v.strip()
+        return validate_non_empty(v, "Accession number").upper()
     
 class FilingFilter(BaseModel):
     form_types: list[str] | None = None
@@ -104,9 +90,7 @@ class FilingFilter(BaseModel):
         
         cleaned = []
         for item in v:
-            if not isinstance(item, str) or not item.strip(): #check non-empty
-                raise ValueError("Form types must be non-empty!")
-            cleaned.append(item.strip().upper())
+            cleaned.append(validate_non_empty(item, "Form types").upper())
         return cleaned
     
     @field_validator("date_to")
