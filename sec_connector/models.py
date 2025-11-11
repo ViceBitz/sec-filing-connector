@@ -10,7 +10,7 @@ def validate_non_empty(v: str, field_name: str) -> str:
 
 class Company(BaseModel):
     """
-    Company identity record
+    Pydantic model for company identity records
     """
 
     ticker: str

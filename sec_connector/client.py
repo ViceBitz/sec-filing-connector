@@ -2,6 +2,10 @@ from .models import Company, Filing, FilingFilter
 from typing import Iterable
 
 class SECClient:
+    """
+    SEC filing client that can look up companies based on CIK and filter filings
+    """
+
     def __init__(self, companies_data: dict[str, dict], filings_data: Iterable[dict] = None):
         self.companies: dict[str, Company] = {}
         for ticker, info in companies_data.items(): #Build company models
