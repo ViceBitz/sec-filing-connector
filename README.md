@@ -1,6 +1,7 @@
 # SEC Connector Demo
 
 A small testable module for looking up companies (ticker → CIK), listing their filings with filters, and printing results via a simple CLI.
+
 ---
 
 ## Installation
