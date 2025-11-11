@@ -8,7 +8,7 @@ class SECClient:
             try:
                 company = Company(
                     ticker=ticker,
-                    cik=str(info["cik"]),
+                    cik=str(info["cik"]).zfill(10),
                     name=str(info["name"])
                 )
             except Exception as e: #actually throw error when model invalid
