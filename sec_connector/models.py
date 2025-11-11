@@ -1,6 +1,7 @@
+from __future__ import annotations
 from pydantic import BaseModel, Field, field_validator
 from datetime import date
-from __future__ import annotations
+
 
 def validate_non_empty(v: str, field_name: str) -> str:
     if (not isinstance(v, str) or not v.strip()): #check string empty
@@ -71,7 +72,7 @@ class Filing(BaseModel):
     
     @field_validator("accession_number")
     @classmethod
-    def validate_form_type(cls, v: str):
+    def validate_accession_number(cls, v: str):
         return validate_non_empty(v, "Accession number").upper()
     
 class FilingFilter(BaseModel):
