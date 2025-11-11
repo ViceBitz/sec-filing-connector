@@ -8,44 +8,43 @@ from sec_connector.models import FilingFilter
 def main():
     parser = argparse.ArgumentParser(description="Simple SEC filings CLI")
     parser.add_argument("ticker", type=str, help="Company ticker")
-    parser.add_argument("--form", type=str, nargs="*", help="Form types to filter (e.g. 10-K 10-Q)")
+    parser.add_argument("--form", type=str, nargs="*", default=None, help="Form types to filter (e.g. 10-K 10-Q)")
     parser.add_argument("--limit", type=int, default=10, help="Max number of filings")
-    parser.add_argument("--data-file", type=str, default=None, help="Optional JSON file with test filings")
+    parser.add_argument("--companies", type=str, default="tests/fixtures/company_tickers.json",
+                        help="Path to company tickers JSON")
+    parser.add_argument("--filings", type=str, default="tests/fixtures/filings_sample.json",
+                        help="Path to filings JSON")
+    
     args = parser.parse_args()
 
-    #Example companies data
-    companies_data = {
-        "AAPL": {"cik": "320193", "name": "Apple Inc."},
-        "TSLA": {"cik": "1318605", "name": "Tesla Inc."},
-    }
+    #read from test files
+    companies_path = Path(args.companies)
+    filings_path = Path(args.filings)
+    companies_data = json.loads(companies_path.read_text())
+    filings_data = json.loads(filings_path.read_text())
 
-    #Load filingsg
-    filings_data = []
-    if args.data_file:
-        path = Path(args.data_file)
-        if path.exists():
-            filings_data = json.loads(path.read_text())
-
+    #make client
     client = SECClient(companies_data=companies_data, filings_data=filings_data)
-    filters = FilingFilter(form_types=args.form, limit=args.limit)
+    try:
+        company = client.lookup_company(args.ticker)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
 
-    #Lookup companies and filings
-    company = client.lookup_company(args.ticker)
-    filings = client.list_filings(company.cik, filters)
+    #make filters
+    filters = FilingFilter(
+        form_types=[f.upper() for f in args.form] if args.form else None,
+        limit=args.limit
+    )
+    results = client.list_filings(company.cik, filters)
 
-    #Format to JSON
-    output = [
-        {
-            "cik": f.cik,
-            "company_name": f.company_name,
-            "form_type": f.form_type,
-            "filing_date": f.filing_date.isoformat(),
-            "accession_number": f.accession_number,
-        }
-        for f in filings
-    ]
+    if not results:
+        print(f"No filings found for {company.ticker} with given filters")
+        return
 
-    print(json.dumps(output, indent=2))
+    #output as json
+    output = [f.model_dump() for f in results]
+    print(json.dumps(output, indent=2, sort_keys=True, default=str))
 
 if __name__ == "__main__":
     main()
