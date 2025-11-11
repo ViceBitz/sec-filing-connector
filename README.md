@@ -109,7 +109,7 @@ python3 -m sec_connector.cli AAPL
 python3 -m sec_connector.cli AAPL --form 10-K --limit 5
 
 #APPL filings between 01/01/2024 and 12/13/2024
-python3 -m sec_connector.cli AAPL --from 2024-01-01 --to 2024-12-31
+python3 -m sec_connector.cli AAPL --from_date 2024-01-01 --to_date 2024-12-31
 
 #Specify alternate companies file
 python3 -m sec_connector.cli AAPL --companies tests/fixtures/company_tickers2.json
