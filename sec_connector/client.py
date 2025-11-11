@@ -61,7 +61,6 @@ class SECClient:
     def list_filings(self, cik: str, filters: FilingFilter) -> list[Filing]:
         cik_norm = str(cik).zfill(10)
         results = [f for f in self.filings if f.cik.zfill(10) == cik_norm]
-        print(self.filings)
 
         if filters.form_types: #filter form type
             ft_set = {ft.upper() for ft in filters.form_types}
