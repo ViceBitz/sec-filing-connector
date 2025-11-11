@@ -6,11 +6,18 @@ A small testable module for looking up companies (ticker → CIK), listing their
 
 ## Installation
 
-Install the package locally in editable mode for rapid iteration during development.
+Create virtual environment and activate:
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install the package locally in editable mode:
 
 ```bash
 pip install -e .
 ```
+
 ## Run Tests
 
 Execute unit tests with pytest to validate models and client logic.
