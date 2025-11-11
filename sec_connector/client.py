@@ -12,7 +12,7 @@ class SECClient:
             try:
                 company = Company(
                     ticker=ticker,
-                    cik=str(info["cik"]).zfill(10),
+                    cik=str(info["cik"]),
                     name=str(info["name"])
                 )
             except Exception as e: #actually throw error when model invalid
@@ -60,7 +60,8 @@ class SECClient:
     """
     def list_filings(self, cik: str, filters: FilingFilter) -> list[Filing]:
         cik_norm = str(cik).zfill(10)
-        results = [f for f in self.filings if f.cik == cik_norm]
+        results = [f for f in self.filings if f.cik.zfill(10) == cik_norm]
+        print(self.filings)
 
         if filters.form_types: #filter form type
             ft_set = {ft.upper() for ft in filters.form_types}

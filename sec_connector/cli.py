@@ -5,10 +5,21 @@ from pathlib import Path
 from sec_connector.client import SECClient
 from sec_connector.models import FilingFilter
 
+#Convert YYYY-MM-DD to datetime.data
+def parse_date(date_str: str | None):
+    if not date_str:
+        return None
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_str}. Use YYYY-MM-DD.")
+    
 def main():
     parser = argparse.ArgumentParser(description="Simple SEC filings CLI")
     parser.add_argument("ticker", type=str, help="Company ticker")
     parser.add_argument("--form", type=str, nargs="*", default=None, help="Form types to filter (e.g. 10-K 10-Q)")
+    parser.add_argument("--date-from", type=str, default=None, help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--date-to", type=str, default=None, help="End date (YYYY-MM-DD)")
     parser.add_argument("--limit", type=int, default=10, help="Max number of filings")
     parser.add_argument("--companies", type=str, default="tests/fixtures/company_tickers.json",
                         help="Path to company tickers JSON")
@@ -31,9 +42,14 @@ def main():
         print(f"Error: {e}")
         return
 
+    date_from = parse_date(args.date_from)
+    date_to = parse_date(args.date_to)
+
     #make filters
     filters = FilingFilter(
         form_types=[f.upper() for f in args.form] if args.form else None,
+        date_from=date_from,
+        date_to=date_to,
         limit=args.limit
     )
     results = client.list_filings(company.cik, filters)
