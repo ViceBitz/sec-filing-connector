@@ -8,7 +8,7 @@ class SECClient:
 
         if filings_data:
             for f in filings_data:
-                cik = str(f["cik"]).zfill(10)
+                cik = str(f["cik"])
                 self.filings.append(
                     Filing(
                         cik=cik,
@@ -52,5 +52,5 @@ class SECClient:
         if filters.date_to:
             results = [f for f in results if f.filing_date <= filters.date_to]
         
-        results.sort(key=lambda f: f.filing_date, reverse=True)
-        return results[: filters.limit]
+        results.sort(key=lambda f: f.filing_date, reverse=True) #sort by latest date
+        return results[: filters.limit] #limit file count
