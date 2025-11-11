@@ -38,6 +38,7 @@ class SECClient:
                 except Exception as e: #actually throw error when model invalid
                     raise ValueError(f"Invalid filing data for {cik} : {e}")
     """
+    Find and create company model by ticker
     - Normalize ticker to upper-case
     - Fill CIK to 10 digits
     - Check ticker -> company
@@ -49,17 +50,18 @@ class SECClient:
         company = self.companies.get(t_norm)
         if not company:
             raise ValueError(f"Company not found for ticker '{t_norm}'")
-        cik = str(company.cik).zfill(10)
+        company.cik = str(company.cik).zfill(10) #zero-pad to 10 digits
         return company
 
 
     """
+    List filings given company CIK based on set of filters
     - Fill CIK to 10 digits
     - Filter form types and date ranges
     *Note: does not check for invalid CIK, returns []
     """
     def list_filings(self, cik: str, filters: FilingFilter) -> list[Filing]:
-        cik_norm = str(cik).zfill(10)
+        cik_norm = str(cik).zfill(10) #zero-pad to 10 digits
         results = [f for f in self.filings if f.cik.zfill(10) == cik_norm]
 
         if filters.form_types: #filter form type
