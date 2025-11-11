@@ -96,8 +96,8 @@ class FilingFilter(BaseModel):
     
     @field_validator("date_to")
     @classmethod
-    def validate_date_range(cls, v: date | None, values) -> date | None:
-        start = values.get("date_from")
+    def validate_date_range(cls, v: date | None, info) -> date | None:
+        start = info.data.get("date_from")
         if start and v and start > v:
-            raise ValueError("Date from cannot be after date to")
+            raise ValueError("Date-from cannot be after date-to")
         return v
