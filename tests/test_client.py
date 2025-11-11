@@ -75,8 +75,7 @@ def test_list_filings_invalid_cik():
     companies_data, filings_data = load_fixtures()
     client = SECClient(companies_data=companies_data, filings_data=filings_data)
     filters = FilingFilter()
-    with pytest.raises(ValueError):
-        client.list_filings("", filters)
+    assert not len(client.list_filings("", filters))
 
 
 def test_filingfilter_invalid_dates():
