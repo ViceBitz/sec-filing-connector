@@ -18,8 +18,8 @@ def main():
     parser = argparse.ArgumentParser(description="Simple SEC filings CLI")
     parser.add_argument("ticker", type=str, help="Company ticker")
     parser.add_argument("--form", type=str, nargs="*", default=None, help="Form types to filter (e.g. 10-K 10-Q)")
-    parser.add_argument("--from", type=str, default=None, help="Start date (YYYY-MM-DD)")
-    parser.add_argument("--to", type=str, default=None, help="End date (YYYY-MM-DD)")
+    parser.add_argument("--from_date", type=str, default=None, help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--to_date", type=str, default=None, help="End date (YYYY-MM-DD)")
     parser.add_argument("--limit", type=int, default=10, help="Max number of filings")
     parser.add_argument("--companies", type=str, default="tests/fixtures/company_tickers.json",
                         help="Path to company tickers JSON")
@@ -42,8 +42,8 @@ def main():
         print(f"Error: {e}")
         return
 
-    date_from = parse_date(args.date_from)
-    date_to = parse_date(args.date_to)
+    date_from = parse_date(args.from_date)
+    date_to = parse_date(args.to_date)
 
     #make filters
     filters = FilingFilter(
