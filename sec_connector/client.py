@@ -41,7 +41,7 @@ class SECClient:
     - Normalize ticker to upper-case
     - Fill CIK to 10 digits
     - Check ticker -> company
-    - Create Company obj
+    - Create Company model
     """
     #Normalize ticker to upper-case, fill cik to 10 digits, create Company obj
     def lookup_company(self, ticker: str) -> Company:
@@ -56,7 +56,7 @@ class SECClient:
     """
     - Fill CIK to 10 digits
     - Filter form types and date ranges
-    *Note: does not check for invalid cik, per instructions
+    *Note: does not check for invalid CIK, returns []
     """
     def list_filings(self, cik: str, filters: FilingFilter) -> list[Filing]:
         cik_norm = str(cik).zfill(10)
